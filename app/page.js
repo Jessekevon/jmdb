@@ -13,6 +13,19 @@ const IndexPage = () => {
   const [collection, setCollection] = useState([]);
 
   useEffect(() => {
+    // Fetch movie data and update the state
+    const fetchMovies = async () => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchTerm}`
+      );
+      const data = await response.json();
+      setMovies(data.results);
+    };
+
+    fetchMovies();
+  }, [searchTerm]);
+
+  useEffect(() => {
     const storedCollection = localStorage.getItem('movieCollection');
     if (storedCollection) {
       setCollection(JSON.parse(storedCollection));
