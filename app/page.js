@@ -1,4 +1,5 @@
 'use client';
+'use client';
 import React, { useState, useEffect } from 'react';
 import MovieSearch from '../components/MovieSearch';
 import MovieCollection from '../components/MovieCollection';
@@ -10,13 +11,7 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const IndexPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [movies, setMovies] = useState([]);
-  const [collections, setCollections] = useState([
-    { name: 'Ultra HD 4K', movies: [] },
-    { name: 'Blu-ray', movies: [] },
-    { name: 'DVD', movies: [] },
-    { name: 'VHS', movies: [] },
-    { name: 'LaserDisc', movies: [] }
-  ]);
+  const [collections, setCollections] = useState([]);
 
   useEffect(() => {
     // Fetch movie data and update the state
@@ -74,15 +69,23 @@ const IndexPage = () => {
   };
 
   useEffect(() => {
-    localStorage.setItem('movieCollections', JSON.stringify(collections));
-  }, [collections]);
-
-  useEffect(() => {
     const storedCollections = localStorage.getItem('movieCollections');
     if (storedCollections) {
       setCollections(JSON.parse(storedCollections));
+    } else {
+      setCollections([
+        { name: 'Ultra HD 4K', movies: [] },
+        { name: 'Blu-ray', movies: [] },
+        { name: 'DVD', movies: [] },
+        { name: 'VHS', movies: [] },
+        { name: 'LaserDisc', movies: [] }
+      ]);
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('movieCollections', JSON.stringify(collections));
+  }, [collections]);
 
   return (
     <div className="flex">

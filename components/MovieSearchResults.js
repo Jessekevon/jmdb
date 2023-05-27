@@ -1,7 +1,13 @@
 'use client';
 import React, { useState } from 'react';
 
-const MovieSearchResults = ({ movies, onAddToCollection, imageBaseUrl, collections, onCollectionSelect }) => {
+const MovieSearchResults = ({
+    movies,
+    onAddToCollection,
+    imageBaseUrl,
+    collections,
+    onCollectionSelect,
+}) => {
     const [selectedCollections, setSelectedCollections] = useState({});
 
     const handleCollectionSelect = (movieId, collection) => {
@@ -25,7 +31,7 @@ const MovieSearchResults = ({ movies, onAddToCollection, imageBaseUrl, collectio
                     >
                         <option value="">Select Collection</option>
                         {collections.map((collection) => (
-                            <option key={collection.id} value={collection.name}>
+                            <option key={collection.name} value={collection.name}>
                                 {collection.name}
                             </option>
                         ))}
