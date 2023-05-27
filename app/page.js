@@ -10,7 +10,13 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const IndexPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [movies, setMovies] = useState([]);
-  const [collection, setCollection] = useState([]);
+  const [collections, setCollections] = useState([
+    { name: 'Ultra HD 4K', movies: [] },
+    { name: 'Blu-ray', movies: [] },
+    { name: 'DVD', movies: [] },
+    { name: 'VHS', movies: [] },
+    { name: 'LaserDisc', movies: [] }
+  ]);
 
   useEffect(() => {
     // Fetch movie data and update the state
@@ -24,17 +30,6 @@ const IndexPage = () => {
 
     fetchMovies();
   }, [searchTerm]);
-
-  useEffect(() => {
-    const storedCollection = localStorage.getItem('movieCollection');
-    if (storedCollection) {
-      setCollection(JSON.parse(storedCollection));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('movieCollection', JSON.stringify(collection));
-  }, [collection]);
 
   const handleSearch = async () => {
     const response = await fetch(
@@ -53,47 +48,75 @@ const IndexPage = () => {
     setSearchTerm('');
   };
 
-  const handleAddToCollection = (movie) => {
-    const isInCollection = collection.find((item) => item.id === movie.id);
-    if (!isInCollection) {
-      setCollection((prevCollection) => [...prevCollection, movie]);
+  const handleAddToCollection = (movie, collectionName) => {
+    const collection = collections.find((c) => c.name === collectionName);
+    if (collection && !collection.movies.some((m) => m.id === movie.id)) {
+      const updatedCollections = collections.map((c) =>
+        c.name === collectionName ? { ...c, movies: [...c.movies, movie] } : c
+      );
+      setCollections(updatedCollections);
       console.log('Added to collection:', movie);
     } else {
       console.log('Movie already exists in the collection:', movie);
     }
   };
 
-  const handleRemoveFromCollection = (movie) => {
-    setCollection((prevCollection) =>
-      prevCollection.filter((item) => item.id !== movie.id)
-    );
-    console.log('Removed from collection:', movie);
+  const handleRemoveFromCollection = (movie, collectionName) => {
+    const collection = collections.find((c) => c.name === collectionName);
+    if (collection) {
+      const updatedMovies = collection.movies.filter((m) => m.id !== movie.id);
+      const updatedCollections = collections.map((c) =>
+        c.name === collectionName ? { ...c, movies: updatedMovies } : c
+      );
+      setCollections(updatedCollections);
+      console.log('Removed from collection:', movie);
+    }
   };
 
+  useEffect(() => {
+    localStorage.setItem('movieCollections', JSON.stringify(collections));
+  }, [collections]);
+
+  useEffect(() => {
+    const storedCollections = localStorage.getItem('movieCollections');
+    if (storedCollections) {
+      setCollections(JSON.parse(storedCollections));
+    }
+  }, []);
+
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Movie Collection</h1>
-      <MovieSearch
-        searchTerm={searchTerm}
-        onSearchTermChange={setSearchTerm}
-        onSearch={handleSearch}
-        onClearSearch={handleClearSearch}
-      />
-      {movies && movies.length > 0 ? (
-        <MovieSearchResults
-          movies={movies}
-          onAddToCollection={handleAddToCollection}
+    <div className="flex">
+      <div className="w-1/4 p-4">
+        <h1>Movie Collection</h1>
+        <div className="mt-8">
+          <MovieSearch
+            searchTerm={searchTerm}
+            onSearchTermChange={setSearchTerm}
+            onSearch={handleSearch}
+            onClearSearch={handleClearSearch}
+          />
+          {movies && movies.length > 0 ? (
+            <MovieSearchResults
+              movies={movies}
+              collections={collections}
+              onAddToCollection={handleAddToCollection}
+              imageBaseUrl={IMAGE_BASE_URL}
+            />
+          ) : (
+            <p className="text-gray-500">No movies found.</p>
+          )}
+        </div>
+      </div>
+      <div className="w-3/4 p-4">
+        <MovieCollection
+          collections={collections}
+          onRemoveFromCollection={handleRemoveFromCollection}
           imageBaseUrl={IMAGE_BASE_URL}
         />
-      ) : (
-        <p className="text-gray-500">No movies found.</p>
-      )}
-      <MovieCollection
-        collection={collection}
-        onRemoveFromCollection={handleRemoveFromCollection}
-      />
+      </div>
     </div>
   );
 };
 
 export default IndexPage;
+

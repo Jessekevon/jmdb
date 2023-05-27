@@ -1,23 +1,42 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 
-const MovieSearchResults = ({ movies, onAddToCollection, imageBaseUrl }) => {
+const MovieSearchResults = ({ movies, onAddToCollection, imageBaseUrl, collections, onCollectionSelect }) => {
+    const [selectedCollections, setSelectedCollections] = useState({});
+
+    const handleCollectionSelect = (movieId, collection) => {
+        setSelectedCollections((prevSelectedCollections) => ({
+            ...prevSelectedCollections,
+            [movieId]: collection,
+        }));
+    };
+
     return (
-        <div>
-            <h2>Search Results</h2>
-            <ul>
-                {movies.map((movie) => (
-                    <li key={movie.id}>
-                        <h3>{movie.title}</h3>
-                        <img src={`${imageBaseUrl}${movie.poster_path}`} alt={movie.title} className="w-24 h-auto" />
-                        <p>{movie.overview}</p>
-                        <button onClick={() => onAddToCollection(movie)}>
-                            Add to Collection
-                        </button>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <ul>
+            {movies.map((movie) => (
+                <li key={movie.id}>
+                    <h2>{movie.title}</h2>
+                    {/* <p>{movie.overview}</p> */}
+                    <img src={`${imageBaseUrl}${movie.poster_path}`} alt={movie.title} />
+
+                    <select
+                        value={selectedCollections[movie.id] || ''}
+                        onChange={(e) => handleCollectionSelect(movie.id, e.target.value)}
+                    >
+                        <option value="">Select Collection</option>
+                        {collections.map((collection) => (
+                            <option key={collection.id} value={collection.name}>
+                                {collection.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <button onClick={() => onAddToCollection(movie, selectedCollections[movie.id])}>
+                        Add to Collection
+                    </button>
+                </li>
+            ))}
+        </ul>
     );
 };
 
