@@ -1,6 +1,8 @@
 'use client';
 'use client';
 import React, { useState, useEffect } from 'react';
+import { Container, Hero, Section, Columns, Button, Dropdown } from 'react-bulma-components';
+import 'bulma/css/bulma.min.css';
 import MovieSearch from '../components/MovieSearch';
 import MovieCollection from '../components/MovieCollection';
 import MovieSearchResults from '../components/MovieSearchResults';
@@ -88,35 +90,47 @@ const IndexPage = () => {
   }, [collections]);
 
   return (
-    <div className="flex">
-      <div className="w-1/4 p-4">
-        <h1>Movie Collection</h1>
-        <div className="mt-8">
-          <MovieSearch
-            searchTerm={searchTerm}
-            onSearchTermChange={setSearchTerm}
-            onSearch={handleSearch}
-            onClearSearch={handleClearSearch}
-          />
-          {movies && movies.length > 0 ? (
-            <MovieSearchResults
-              movies={movies}
-              collections={collections}
-              onAddToCollection={handleAddToCollection}
-              imageBaseUrl={IMAGE_BASE_URL}
+    <div>
+      <Hero color="primary">
+        <Hero.Body>
+          <Container>
+            <h1 className="title">Movie Collection</h1>
+            <MovieSearch
+              searchTerm={searchTerm}
+              onSearchTermChange={setSearchTerm}
+              onSearch={handleSearch}
+              onClearSearch={handleClearSearch}
             />
-          ) : (
-            <p className="text-gray-500">No movies found.</p>
-          )}
-        </div>
-      </div>
-      <div className="w-3/4 p-4">
-        <MovieCollection
-          collections={collections}
-          onRemoveFromCollection={handleRemoveFromCollection}
-          imageBaseUrl={IMAGE_BASE_URL}
-        />
-      </div>
+          </Container>
+        </Hero.Body>
+      </Hero>
+
+      <Section>
+        <Container>
+          <Columns>
+            <Columns.Column size={8}>
+              {movies && movies.length > 0 ? (
+                <MovieSearchResults
+                  movies={movies}
+                  collections={collections}
+                  onAddToCollection={handleAddToCollection}
+                  imageBaseUrl={IMAGE_BASE_URL}
+                />
+              ) : (
+                <p className="has-text-grey">No movies found.</p>
+              )}
+            </Columns.Column>
+
+            <Columns.Column size={4}>
+              <MovieCollection
+                collections={collections}
+                onRemoveFromCollection={handleRemoveFromCollection}
+                imageBaseUrl={IMAGE_BASE_URL}
+              />
+            </Columns.Column>
+          </Columns>
+        </Container>
+      </Section>
     </div>
   );
 };
