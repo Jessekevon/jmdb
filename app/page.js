@@ -1,5 +1,4 @@
 'use client';
-'use client';
 import React, { useState, useEffect } from 'react';
 import { Container, Hero, Section, Columns, Button, Dropdown } from 'react-bulma-components';
 import 'bulma/css/bulma.min.css';
