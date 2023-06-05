@@ -2,14 +2,15 @@
 import React, { useState } from 'react';
 
 const MovieSearchResults = ({
-    movies,
-    onAddToCollection,
-    imageBaseUrl,
-    collections,
-    onCollectionSelect,
+    movies, // array of movies
+    onAddToCollection, // function to add a movie to a collection
+    imageBaseUrl, // base url for movie poster images
+    collections, // array of collections
+    onCollectionSelect, // function to select a collection
 }) => {
+    // State to track which collection is selected for each movie
     const [selectedCollections, setSelectedCollections] = useState({});
-
+    // Function to handle when a collection is selected
     const handleCollectionSelect = (movieId, collection) => {
         setSelectedCollections((prevSelectedCollections) => ({
             ...prevSelectedCollections,

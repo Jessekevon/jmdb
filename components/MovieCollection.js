@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
-
-const MovieCollection = ({ collections, onRemoveFromCollection, imageBaseUrl }) => {
+const MovieCollection = ({ collections, onRemoveFromCollection, imageBaseUrl }) => { 
   return (
     <div>
       <h2 className="title is-3">My Collection</h2>
